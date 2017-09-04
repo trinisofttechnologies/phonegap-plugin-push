@@ -452,6 +452,11 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
         setVisibility(context, extras, mBuilder);
 
         /*
+         * Notification Countly
+         */
+        setNotificationCountly
+        
+        /*
          * Notification add actions
          */
         createActions(extras, mBuilder, resources, packageName, notId);
@@ -459,6 +464,71 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
         mNotificationManager.notify(appName, notId, mBuilder.build());
     }
 
+    // Countly Start
+    // setNotificationMedia(extras, mBuilder);
+    public void setNotificationCountly(Bundle extras, NotificationCompat.Builder mBuilder){
+        setNotificationMedia(extras, mBuilder);
+        setNotificationButton(extras, mBuilder);
+    }
+
+    public void setNotificationMedia(Bundle extras, NotificationCompat.Builder mBuilder){
+        Log.d("Nicolson", "setNotificationButton: ");
+        String mediaString = extras.getString("c.m");
+        String message = extras.getString("message");
+        Bitmap image = null;
+        if (message == null) {
+            message = "";
+        }
+        if (mediaString != null && !"".equals(mediaString)) {
+            try {
+                URL url = new URL(mediaString);
+                image = BitmapFactory.decodeStream(url.openConnection().getInputStream());
+            } catch(IOException e) {
+                System.out.println(e);
+            }
+            mBuilder.setStyle(new NotificationCompat.BigPictureStyle()
+                    .bigPicture(image)
+                    .setBigContentTitle(extras.getString(TITLE))
+                    .setSummaryText(message));
+        }
+    }
+
+
+
+    static final class Button {
+        int index;
+        String title;
+        String link;
+    }
+
+    public void setNotificationButton(Bundle extras, NotificationCompat.Builder mBuilder){
+        Log.d("Nicolson", "setNotificationButton: ");
+        Boolean isButton = false;
+        String json = extras.getString("c.b");
+        if (json != null) {
+            try {
+                JSONArray array = new JSONArray(json);
+                Log.d("Nicolson", "array.length(): " +array.length());
+                for (int i = 0; i < array.length(); i++) {
+                    JSONObject btn = array.getJSONObject(i);
+                    if (btn.has("t") && btn.has("l")) {
+                        Button button = new Button();
+                        button.index = i + 1;
+                        button.title = btn.getString("t");
+                        button.link = btn.getString("l");
+                        Log.d("Nicolson", "Button added: " +button.title);
+                        Intent actionIntent = new Intent(this, PushHandlerActivity.class);
+                        actionIntent.putExtra("ly.count.android.api.messaging.action.index", button.index);
+                        mBuilder.addAction(0, button.title, PendingIntent.getActivity(getApplicationContext(), button.index, actionIntent, PendingIntent.FLAG_UPDATE_CURRENT));
+                    }
+                }
+            } catch (Throwable e) {
+                e.printStackTrace();
+            }
+        }
+    }
+    // Countly End
+    
     private void updateIntent(Intent intent, String callback, Bundle extras, boolean foreground, int notId) {
         intent.putExtra(CALLBACK, callback);
         intent.putExtra(PUSH_BUNDLE, extras);
