@@ -454,8 +454,8 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
         /*
          * Notification Countly
          */
-        setNotificationCountly
-        
+        setNotificationCountly(extras, mBuilder);
+
         /*
          * Notification add actions
          */
@@ -465,7 +465,7 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
     }
 
     // Countly Start
-    // setNotificationMedia(extras, mBuilder);
+    // setNotificationCountly(extras, mBuilder);
     public void setNotificationCountly(Bundle extras, NotificationCompat.Builder mBuilder){
         setNotificationMedia(extras, mBuilder);
         setNotificationButton(extras, mBuilder);
