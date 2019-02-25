@@ -509,12 +509,12 @@ public class FCMService extends FirebaseMessagingService implements PushConstant
      * Notification count
      */
     setVisibility(context, extras, mBuilder);
-    
+
     /*
      * Notification Countly
      */
     setNotificationCountly(extras, mBuilder);
-    
+
     /*
      * Notification add actions
      */
@@ -574,7 +574,7 @@ public class FCMService extends FirebaseMessagingService implements PushConstant
                       button.title = btn.getString("t");
                       button.link = btn.getString("l");
                       Intent actionIntent = new Intent(this, PushHandlerActivity.class);
-                      actionIntent.putExtra("ly.count.android.api.messaging.action.index", button.index);
+                      // actionIntent.putExtra("ly.count.android.api.messaging.action.index", button.index);
                       mBuilder.addAction(0, button.title, PendingIntent.getActivity(getApplicationContext(), button.index, actionIntent, PendingIntent.FLAG_UPDATE_CURRENT));
                   }
               }
